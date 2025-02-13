@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Code Leaderboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: #f8f9fa;
+            line-height: 1.6;
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: white;
+            font-weight: 500;
+        }
+        .score-badge {
+            background-color: rgba(255,255,255,0.15);
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+        .tab-content {
+            background-color: rgba(255, 255, 255, 0.08);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 2.5rem;
+        }
+        .table {
+            color: #f8f9fa;
+            background-color: rgba(255, 255, 255, 0.05);
+            margin: 1.5rem 0;
+        }
+        .table thead th {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding: 1.2rem 1rem;
+            color: #fff;
+            font-weight: 600;
+        }
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 0.8rem 1rem;
+        }
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+        .nav-tabs {
+            border-bottom: none;
+            gap: 0.8rem;
+            margin-bottom: -1px;
+        }
+        .nav-tabs .nav-link {
+            color: rgba(255,255,255,0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 10px;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .nav-tabs .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+        }
+        .nav-tabs .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-weight: 600;
+        }
+        .user-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+            border-color: #2ecc71;
+        }
+        .btn-info {
+            background-color: #00b4d8;
+            border-color: #00b4d8;
+            color: #fff;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .filters-section {
+            background-color: rgba(0,0,0,0.1);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .modal-content {
+            background-color: #2c3e50;
+            color: #fff;
+        }
+        .modal-header {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .modal-footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-code me-2"></i>
+                Code Leaderboard
+            </a>
+            <div class="user-info ms-auto">
+                <div class="score-badge">
+                    <i class="fas fa-star text-warning"></i>
+                    <span id="user-score">0</span> points
+                </div>
+                <span id="user-name"></span>
+                <a href="/logout" class="btn btn-outline-light">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="leaderboard-tab" data-bs-toggle="tab" data-bs-target="#leaderboard" type="button" role="tab" aria-controls="leaderboard" aria-selected="true">Leaderboard</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="questions-tab" data-bs-toggle="tab" data-bs-target="#questions" type="button" role="tab" aria-controls="questions" aria-selected="false">Questions</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="dashboardTabsContent">
+            <div class="tab-pane fade show active" id="leaderboard" role="tabpanel" aria-labelledby="leaderboard-tab">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Score</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-table-body">
+                        <!-- Leaderboard will be dynamically populated here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane fade" id="questions" role="tabpanel" aria-labelledby="questions-tab">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="search-title" placeholder="Search by title">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-control" id="filter-platform">
+                            <option value="">All Platforms</option>
+                            <option value="LeetCode">LeetCode</option>
+                            <option value="HackerRank">HackerRank</option>
+                            <option value="HackerEarth">HackerEarth</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-control" id="filter-difficulty">
+                            <option value="">All Difficulties</option>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-control" id="filter-status">
+                            <option value="">All Statuses</option>
+                            <option value="Doing">Doing</option>
+                            <option value="Done">Done</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Platform</th>
+                            <th>Difficulty</th>
+                            <th>Points</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="questions-table-body">
+                        <!-- Questions will be dynamically populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Platform</th>
+                                <th>Difficulty</th>
+                                <th>Points</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="details-table-body">
+                            <!-- Attempted questions will be dynamically populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+
+</html>

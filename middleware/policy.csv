@@ -1,0 +1,18 @@
+role, url, method
+admin, /api/v1/questions, GET
+admin, /api/v1/questions, POST
+admin, /api/v1/questions/:questionsId, GET
+admin, /api/v1/questions/:questionsId, PUT
+admin, /api/v1/questions/:questionsId, DELETE
+user, /api/v1/questions, GET
+user, /api/v1/questions/:questionsId, GET
+
+admin, /api/v1/attempts, GET
+admin, /api/v1/attempts, POST
+user, /api/v1/attempts, GET
+user, /api/v1/attempts, POST
+
+admin, /api/v1/leaderboards, GET
+admin, /api/v1/leaderboards/myscore, GET
+user, /api/v1/leaderboards, GET
+user, /api/v1/leaderboards/myscore, GET
