@@ -10,7 +10,7 @@ exports.connect = async () => {
     } else if (envConstants.AUTHENTICATION === 'false') {
       await mongoose.connect(`${envConstants.DB_DIALECT}://${envConstants.DB_HOST}:${envConstants.DB_PORT}/${envConstants.DB_NAME}`);
     } else {
-      await mongoose.connect(`${envConstants.DB_DIALECT}://${envConstants.DB_USER}:${envConstants.DB_PASS}@${envConstants.DB_HOST}:${envConstants.DB_PORT}/${envConstants.DB_NAME}?authSource=admin`);
+      await mongoose.connect(`${envConstants.DB_DIALECT}://${envConstants.DB_USER}:${envConstants.DB_PASS}@${envConstants.DB_HOST}:${envConstants.DB_PORT}/${envConstants.DB_NAME}`);
     }
   } catch (error) {
     // eslint-disable-next-line no-console

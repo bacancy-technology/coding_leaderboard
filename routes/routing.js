@@ -7,7 +7,7 @@ const questionRoutes = require('../controllers/v1/question/question.routes');
 const { envConstants } = require('../helpers/constants');
 const { errorMessages } = require('../helpers/messages');
 
-const whitelist = [`${envConstants.APP_HOST}:${envConstants.APP_PORT}`, 'http://localhost', envConstants.APP_HOST];
+const whitelist = [`${envConstants.APP_HOST}:${envConstants.APP_PORT}`, 'http://localhost', envConstants.APP_HOST, `https://${envConstants.APP_HOST}`];
 
 const perIpTimeLimit = 15 * 60 * 1000; // 15 minutes
 
