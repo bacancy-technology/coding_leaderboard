@@ -74,7 +74,12 @@ async function fetchQuestions() {
         const questionStatus = attemptData.success && attemptData.data.length > 0 ? attemptData.data[0].attributes.status : 'Not Started';
         const row = document.createElement('tr');
         row.innerHTML = `
-                <td>${question.attributes.title}</td>
+                <td>
+                    <a href="${question.attributes.link}" target="_blank">
+                        ${question.attributes.title}
+                        <i class="fas fa-external-link-alt ms-1"></i>
+                    </a>
+                </td>
                 <td>${question.attributes.platform}</td>
                 <td>${question.attributes.difficulty}</td>
                 <td>${question.attributes.points}</td>
@@ -102,7 +107,12 @@ async function viewUserDetails(userId) {
       data.data.forEach((attempt) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-                <td>${attempt.attributes.questionsId.title}</td>
+                <td>
+                    <a href="${attempt.attributes.questionsId.link}" target="_blank">
+                        ${attempt.attributes.questionsId.title}
+                        <i class="fas fa-external-link-alt ms-1"></i>
+                    </a>
+                </td>
                 <td>${attempt.attributes.questionsId.platform}</td>
                 <td>${attempt.attributes.questionsId.difficulty}</td>
                 <td>${attempt.attributes.questionsId.points}</td>
