@@ -10,8 +10,6 @@ COPY package*.json ./
 
 RUN npm ci --only=production
 
-# Copy .env file and all other files
-COPY .env ./
 COPY . .
 
 # Use PM2 to start the application
