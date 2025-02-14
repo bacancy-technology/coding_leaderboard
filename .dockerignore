@@ -4,5 +4,4 @@ coverage
 .git
 .gitignore
 README.md
-.env.example
-.env.local
+.env*
