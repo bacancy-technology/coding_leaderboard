@@ -243,7 +243,14 @@ async function viewUserDetails(userId) {
 
 async function fetchLeaderboard() {
   try {
-    const response = await fetch('/api/v1/leaderboards');
+    const searchName = document.getElementById('search-name').value.trim();
+    let url = '/api/v1/leaderboards';
+    
+    if (searchName) {
+      url += `?search=${encodeURIComponent(searchName)}`;
+    }
+    
+    const response = await fetch(url);
     const data = await handleApiResponse(response);
     if (data.success) {
       const leaderboardTableBody = document.getElementById('leaderboard-table-body');
@@ -312,6 +319,17 @@ document.addEventListener('DOMContentLoaded', () => {
   filterPlatformSelect.addEventListener('change', applyFilters);
   filterDifficultySelect.addEventListener('change', applyFilters);
   filterStatusSelect.addEventListener('change', applyFilters);
+
+  // Add event listener for name search
+  const searchNameInput = document.getElementById('search-name');
+  let searchTimeout;
+  
+  searchNameInput.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      fetchLeaderboard();
+    }, 300); // Wait 300ms after user stops typing
+  });
 
   fetchUserScore();
   fetchQuestions();
