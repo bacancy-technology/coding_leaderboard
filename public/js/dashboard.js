@@ -10,6 +10,113 @@ document.head.insertAdjacentHTML('beforeend', `
 .btn-outline-light:hover {
     background: rgba(255,255,255,0.1);
 }
+
+.medal-1, .medal-2, .medal-3 {
+    background: rgba(255, 255, 255, 0.1);
+    font-weight: bold;
+}
+
+.medal-1 { background: rgba(255, 215, 0, 0.15); }
+.medal-2 { background: rgba(192, 192, 192, 0.15); }
+.medal-3 { background: rgba(205, 127, 50, 0.15); }
+
+.medal-icon-1 { color: #FFD700; }
+.medal-icon-2 { color: #C0C0C0; }
+.medal-icon-3 { color: #CD7F32; }
+
+.medal-1 .score-cell { color: #FFD700; }
+.medal-2 .score-cell { color: #C0C0C0; }
+.medal-3 .score-cell { color: #CD7F32; }
+
+.fa-medal {
+    margin-right: 10px;
+    font-size: 1.2em;
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* New styles for consistent leaderboard */
+.leaderboard-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rank-indicator {
+    min-width: 32px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.medal-icon-1, .medal-icon-2, .medal-icon-3 {
+    font-size: 1.4em;
+    min-width: 24px;
+}
+
+.table td {
+    padding: 1rem;
+    vertical-align: middle;
+}
+
+.score-cell {
+    font-weight: 600;
+    font-size: 1.1em;
+}
+
+/* Update medal styles */
+.medal-1, .medal-2, .medal-3 {
+    transition: background-color 0.3s ease;
+}
+
+.medal-1:hover { background: rgba(255, 215, 0, 0.2); }
+.medal-2:hover { background: rgba(192, 192, 192, 0.2); }
+.medal-3:hover { background: rgba(205, 127, 50, 0.2); }
+
+/* Update styles for bold titles and top 3 */
+.question-title {
+    font-weight: 600;
+}
+
+.medal-1, .medal-2, .medal-3 {
+    font-weight: 700;
+    font-size: 1.05em;
+}
+
+.medal-1 td, .medal-2 td, .medal-3 td {
+    font-weight: 600;
+}
+
+.medal-1 .score-cell { 
+    color: #FFD700; 
+    font-size: 1.2em;
+    font-weight: 800;
+}
+.medal-2 .score-cell { 
+    color: #C0C0C0; 
+    font-size: 1.15em;
+    font-weight: 800;
+}
+.medal-3 .score-cell { 
+    color: #CD7F32; 
+    font-size: 1.1em;
+    font-weight: 800;
+}
+
+.medal-1 .user-cell { font-size: 1.1em; }
+.medal-2 .user-cell { font-size: 1.05em; }
+.medal-3 .user-cell { font-size: 1.02em; }
 </style>
 `);
 
@@ -76,7 +183,7 @@ async function fetchQuestions() {
         row.innerHTML = `
                 <td>
                     <a href="${question.attributes.link}" target="_blank">
-                        ${question.attributes.title}
+                        <span class="question-title">${question.attributes.title}</span>
                         <i class="fas fa-external-link-alt ms-1"></i>
                     </a>
                 </td>
@@ -109,7 +216,7 @@ async function viewUserDetails(userId) {
         row.innerHTML = `
                 <td>
                     <a href="${attempt.attributes.questionsId.link}" target="_blank">
-                        ${attempt.attributes.questionsId.title}
+                        <span class="question-title">${attempt.attributes.questionsId.title}</span>
                         <i class="fas fa-external-link-alt ms-1"></i>
                     </a>
                 </td>
@@ -141,17 +248,29 @@ async function fetchLeaderboard() {
     if (data.success) {
       const leaderboardTableBody = document.getElementById('leaderboard-table-body');
       leaderboardTableBody.innerHTML = '';
-      data.data.forEach((user) => {
+      data.data.forEach((user, index) => {
+        const medalClass = index < 3 ? `medal-${index + 1}` : '';
+        const rankDisplay = index < 3 
+            ? `<i class="fas fa-medal medal-icon-${index + 1}"></i>`
+            : `<span class="rank-indicator">#${index + 1}</span>`;
+        
         const row = document.createElement('tr');
+        row.className = medalClass;
         row.innerHTML = `
-                <td>
-                    <img src="${user.attributes.usersId.picture || 'default-user-icon.png'}" alt="" class="user-icon" onerror="this.onerror=null;this.src='default-user-icon.png';">
+            <td>
+                <div class="user-cell">
+                    ${rankDisplay}
+                    <img src="${user.attributes.usersId.picture || 'default-user-icon.png'}" 
+                        alt="" 
+                        class="user-icon" 
+                        onerror="this.onerror=null;this.src='default-user-icon.png';">
                     ${user.attributes.usersId.name}
-                </td>
-                <td>${user.attributes.usersId.email}</td>
-                <td>${user.attributes.score}</td>
-                <td><button class="btn btn-sm btn-info" onclick="viewUserDetails('${user.attributes.usersId._id}')">View Details</button></td>
-            `;
+                </div>
+            </td>
+            <td>${user.attributes.usersId.email}</td>
+            <td class="score-cell">${user.attributes.score}</td>
+            <td><button class="btn btn-sm btn-info" onclick="viewUserDetails('${user.attributes.usersId._id}')">View Details</button></td>
+        `;
         leaderboardTableBody.appendChild(row);
       });
     }
