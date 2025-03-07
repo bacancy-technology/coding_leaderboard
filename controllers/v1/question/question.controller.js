@@ -46,13 +46,20 @@ exports.getAll = async (req, res) => {
 
     // If status filter is applied, fetch attempts and filter questions accordingly
     if (param.status) {
-      const attempts = await AttemptsModel.find({
+      const STATUS = ['Doing', 'Done'];
+      const options = {
         usersId: req.user._id,
         status: param.status,
-      }).populate('questionsId').lean();
+      };
 
-      const questionIds = attempts.map((attempt) => attempt.questionsId);
-      data = questionIds;
+      if (!STATUS.includes(param.status)) {
+        const attempts = await AttemptsModel.find({ usersId: req.user._id }).populate('questionsId').lean();
+        const questionIds = attempts.map((attempt) => attempt.questionsId._id);
+        data = data.filter((question) => !questionIds.some((id) => id.equals(question._id)));
+      } else {
+        const attempts = await AttemptsModel.find(options).populate('questionsId').lean();
+        data = attempts.map((attempt) => attempt.questionsId);
+      }
     }
 
     return successResponse('questions', res, data, successMessages.DATA_FETCHED);
